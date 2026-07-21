@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "id": "durable_sponges",
+  "version": "${version}",
+  "name": "Durable Sponges",
+  "description": "This is an example description! Tell everyone what your mod is about!",
+  "authors": ["Bristn"],
+  "contact": {
+    "sources": "https://github.com/FabricMC/fabric-example-mod"
+  },
+  "license": "CC0-1.0",
+  "icon": "assets/durable_sponges/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["net.bristn.durable_sponges.CommonModInitializer"],
+    "client": ["net.bristn.durable_sponges.client.DurableSpongesClient"],
+    "fabric-datagen": ["net.bristn.durable_sponges.CommonModDataGenerator"]
+  },
+  "mixins": [
+    "durable_sponges.mixins.json",
+    {
+      "config": "durable_sponges.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=0.18.4",
+    "minecraft": "~26.1-",
+    "java": ">=25",
+    "fabric-api": "*"
+  }
+}

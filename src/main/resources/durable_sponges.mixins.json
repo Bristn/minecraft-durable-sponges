@@ -1,0 +1,21 @@
+{
+  "required": true,
+  "package": "net.bristn.durable_sponges.mixin",
+  "compatibilityLevel": "JAVA_25",
+  "mixins": [
+    "SpongeBlockMixin",
+    "WetSpongeBlockMixin",
+    "FlowingFluidMixin",
+    "WetSpongeBehaviourMixin",
+    "FallingBlockMixin",
+    "AnyBlockBehaviourMixin",
+    "BucketItemMixin",
+    "WaterFluidMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}

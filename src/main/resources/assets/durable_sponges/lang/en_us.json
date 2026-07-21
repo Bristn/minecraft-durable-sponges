@@ -1,0 +1,12 @@
+{
+  "gamerule.durable_sponges.absorption_time_max": "Sponge absorption time without heat",
+  "gamerule.durable_sponges.absorption_time_max.description": "Sponges keep absorbing water for a short duration. Values must be between 1 and 10 seconds",
+  "gamerule.durable_sponges.delay_before_drying": "Sponge delay before drying",
+  "gamerule.durable_sponges.delay_before_drying.description": "After absorbing water, a wet sponge cannot be dried for this delay. Set to 0 to disable drying",
+  "gamerule.durable_sponges.absorption_range_low": "Sponge absorption range with low heat",
+  "gamerule.durable_sponges.absorption_range_low.description": "Sets the absorption range for sponges with low heat. Must be between 1 and 8",
+  "gamerule.durable_sponges.absorption_range_medium": "Sponge absorption range with medium heat",
+  "gamerule.durable_sponges.absorption_range_medium.description": "Sets the absorption range for sponges with medium heat. Must be between 1 and 8",
+  "gamerule.durable_sponges.absorption_range_high": "Sponge absorption range with high heat",
+  "gamerule.durable_sponges.absorption_range_high.description": "Sets the absorption range for sponges with high heat. Must be between 1 and 8"
+}

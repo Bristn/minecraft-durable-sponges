@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "durable_sponges:wet_sponge_moved_by_piston_change_heat",
+  "max_ticks": 10000,
+  "required": true,
+  "setup_ticks": 1,
+  "structure": "durable_sponges:test_bounds"
+}
