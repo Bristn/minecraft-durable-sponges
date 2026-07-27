@@ -18,11 +18,6 @@ public abstract class AnyBlockBehaviourMixin {
     private void onPlaceAnyBlock(final BlockState state, final Level level, final BlockPos pos,
             final BlockState oldState, final boolean movedByPiston, CallbackInfo callback) {
 
-        // TODO: Having torch on block does currently not work, as water washes away the
-        // torch
-
-        // ! Easy fix by not letting min distance be 1
-
         SpongePlacementUtility.onPlaceAnyBlock(state, level, pos, oldState);
     }
 }

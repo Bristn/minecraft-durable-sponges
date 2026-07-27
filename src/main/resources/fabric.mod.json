@@ -3,17 +3,17 @@
   "id": "durable_sponges",
   "version": "${version}",
   "name": "Durable Sponges",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "description": "Makes sponges absorb water for a small amount of time. Making draining areas less frustrating",
   "authors": ["Bristn"],
   "contact": {
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "sources": "https://github.com/Bristn/minecraft-durable-sponges"
   },
   "license": "CC0-1.0",
   "icon": "assets/durable_sponges/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": ["net.bristn.durable_sponges.CommonModInitializer"],
-    "client": ["net.bristn.durable_sponges.client.DurableSpongesClient"],
+    "client": [],
     "fabric-datagen": ["net.bristn.durable_sponges.CommonModDataGenerator"]
   },
   "mixins": [

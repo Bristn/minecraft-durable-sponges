@@ -19,7 +19,9 @@ public class CommonModInitializer implements ModInitializer {
 
         ModPoiTypes.registerModPoiTypes();
         ModTestFunctions.registerModTestRunner();
-        SpongeTracker.registerChunkLoadHandler();
         ModGameRules.registerModGameRules();
+
+        SpongeTracker.registerChunkLoadHandler();
+        SpongeTracker.registerSpongeUpdateHandler();
     }
 }

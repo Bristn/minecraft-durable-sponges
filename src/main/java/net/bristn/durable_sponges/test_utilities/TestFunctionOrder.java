@@ -25,15 +25,19 @@ public class TestFunctionOrder {
     public static TestFunctionOrder WET_SPONGE_MOVED_BY_PISTON_WITH_HEAT = new TestFunctionOrder(false);
     public static TestFunctionOrder WET_SPONGE_MOVED_BY_PISTON_CHANGE_HEAT = new TestFunctionOrder(false);
     public static TestFunctionOrder WET_SPONGE_DOES_NOT_BREAK_TORCH_ON_EDGE = new TestFunctionOrder(false);
+    public static TestFunctionOrder WET_SPONGE_DOES_NOT_CREATE_OBSIDIAN_ON_EDGE = new TestFunctionOrder(false);
 
-    public static List<TestFunctionOrder> ORDER = List.of(
+    public static List<TestFunctionOrder> SPONGE_GROUP = List.of(
             SPONGE_NOT_REPLACED_WITHOUT_WATER,
             SPONGE_PREVENTS_WATER_SPREADING,
             SPONGE_REPLACES_EXISTING_WATER,
             SPONGE_ABSORBS_AFTER_WALL_BREAK,
             SPONGE_ABSORBS_AFTER_WALL_BREAK_WITH_HEAT,
-            SPONGE_DOES_NOT_REPLACE_WATER_BEHIND_WALL,
+            SPONGE_DOES_NOT_REPLACE_WATER_BEHIND_WALL
+    //
+    );
 
+    public static List<TestFunctionOrder> WET_SPONGE_GROUP = List.of(
             WET_SPONGE_DOES_NOTHING_WITHOUT_WATER,
             WET_SPONGE_DOES_NOTHING_WITHOUT_HEAT,
             WET_SPONGE_ABSORBS_LOW_RANGE,
@@ -45,7 +49,12 @@ public class TestFunctionOrder {
             WET_SPONGE_MOVED_BY_PISTON_WITHOUT_HEAT,
             WET_SPONGE_MOVED_BY_PISTON_WITH_HEAT,
             WET_SPONGE_MOVED_BY_PISTON_CHANGE_HEAT,
-            WET_SPONGE_DOES_NOT_BREAK_TORCH_ON_EDGE);
+            WET_SPONGE_DOES_NOT_BREAK_TORCH_ON_EDGE,
+            WET_SPONGE_DOES_NOT_CREATE_OBSIDIAN_ON_EDGE
+    //
+    );
+
+    public static List<List<TestFunctionOrder>> GROUPS = List.of(SPONGE_GROUP, WET_SPONGE_GROUP);
 
     public boolean hasSucceeded;
 
@@ -58,33 +67,38 @@ public class TestFunctionOrder {
     }
 
     public static void resetIfFinished() {
-        for (var test : ORDER) {
-            if (test.hasSucceeded == false) {
-                return;
+        for (var group : GROUPS) {
+            for (var test : group) {
+                if (test.hasSucceeded == false) {
+                    return;
+                }
             }
         }
 
-        for (var test : ORDER) {
-            test.hasSucceeded = false;
+        for (var group : GROUPS) {
+            for (var test : group) {
+                test.hasSucceeded = false;
+            }
         }
     }
 
-    public static void waitForTestToSucceed(GameTestHelper context, TestFunctionOrder order,
-            List<TestFunctionOrder> list, Runnable callback) {
-
+    public static void waitForTestGroup(GameTestHelper context, List<TestFunctionOrder> group, Runnable callback) {
         context.runAfterDelay(5, () -> {
-            var index = list.indexOf(order);
+            var index = GROUPS.indexOf(group);
             if (index == 0) {
                 callback.run();
                 return;
             }
 
-            if (list.get(index - 1).hasSucceeded == true) {
-                callback.run();
-                return;
+            var prevGroup = GROUPS.get(index - 1);
+            for (var test : prevGroup) {
+                if (test.hasSucceeded == false) {
+                    waitForTestGroup(context, group, callback);
+                    break;
+                }
             }
 
-            waitForTestToSucceed(context, order, list, callback);
+            callback.run();
         });
     }
 }

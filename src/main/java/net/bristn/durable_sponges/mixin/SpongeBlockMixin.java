@@ -1,6 +1,6 @@
 package net.bristn.durable_sponges.mixin;
 
-import net.bristn.durable_sponges.util.SpongeUtility;
+import net.bristn.durable_sponges.util.AbsorptionUtility;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
@@ -45,12 +45,8 @@ public abstract class SpongeBlockMixin extends Block {
             return;
         }
 
-        if (oldState.is(state.getBlock())) {
-            return;
-        }
-
         var serverLevel = (ServerLevel) level;
-        SpongeUtility.tryFirstAbsorption(spongePos, serverLevel);
+        AbsorptionUtility.tryFirstAbsorption(spongePos, serverLevel);
     }
 
     /**
@@ -62,10 +58,6 @@ public abstract class SpongeBlockMixin extends Block {
      */
     @Inject(method = "tryAbsorbWater", at = @At("HEAD"), cancellable = true)
     protected void durableSPongeTryAbsorbWater(final Level level, final BlockPos pos, CallbackInfo callback) {
-        if (level.isClientSide()) {
-            return;
-        }
-
         callback.cancel();
     }
 }

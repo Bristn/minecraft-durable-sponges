@@ -9,8 +9,7 @@
     "WetSpongeBehaviourMixin",
     "FallingBlockMixin",
     "AnyBlockBehaviourMixin",
-    "BucketItemMixin",
-    "WaterFluidMixin"
+    "BucketItemMixin"
   ],
   "injectors": {
     "defaultRequire": 1

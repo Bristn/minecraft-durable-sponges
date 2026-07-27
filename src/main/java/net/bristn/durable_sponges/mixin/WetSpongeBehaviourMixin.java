@@ -47,12 +47,12 @@ public abstract class WetSpongeBehaviourMixin {
             return;
         }
 
-        var access = SpongeTracker.getWetSponge(spongePos);
+        var access = SpongeTracker.getWetSponge((ServerLevel) level, spongePos);
         if (access == null) {
             return;
         }
 
-        access.updateHeatLevel(spongePos, (ServerLevel) level);
+        access.updateHeatLevel(spongePos, (ServerLevel) level, false);
     }
 
     /**
@@ -73,14 +73,12 @@ public abstract class WetSpongeBehaviourMixin {
             return;
         }
 
-        // debugRandomTick(serverLevel, spongePos);
-
         var state = serverLevel.getBlockState(spongePos);
         if (state.is(Blocks.WET_SPONGE) == false) {
             return;
         }
 
-        var access = SpongeTracker.getWetSponge(spongePos);
+        var access = SpongeTracker.getWetSponge(serverLevel, spongePos);
         if (access == null) {
             return;
         }
@@ -109,19 +107,5 @@ public abstract class WetSpongeBehaviourMixin {
                 (1.0F + serverLevel.getRandom().nextFloat() * 0.2F) * 0.7F);
 
         SpongeTracker.removeSponge(serverLevel, spongePos);
-    }
-
-    private void debugRandomTick(final ServerLevel serverLevel, final BlockPos spongePos) {
-        var state = serverLevel.getBlockState(spongePos);
-        if (state.is(Blocks.WET_SPONGE) == false) {
-            return;
-        }
-
-        var access = SpongeTracker.getWetSponge(spongePos);
-        if (access == null) {
-            return;
-        }
-
-        access.debugVisualizePositions(serverLevel);
     }
 }

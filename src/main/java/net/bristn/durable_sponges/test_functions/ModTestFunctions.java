@@ -83,6 +83,7 @@ public class ModTestFunctions {
         var MOVED_BY_PISTON_WITH_HEAT = getId("wet_sponge_moved_by_piston_with_heat");
         var MOVED_BY_PISTON_CHANGE_HEAT = getId("wet_sponge_moved_by_piston_change_heat");
         var DOES_NOT_BREAK_TORCH_ON_EDGE = getId("wet_sponge_does_not_break_torch_on_edge");
+        var DOES_NOT_CREATE_OBSIDIAN_EDGE = getId("wet_sponge_does_not_create_obsidian_on_edge");
 
         Registry.register(BuiltInRegistries.TEST_FUNCTION,
                 DOES_NOTHING_WITHOUT_WATER,
@@ -155,6 +156,12 @@ public class ModTestFunctions {
                 (Consumer<GameTestHelper>) (helper) -> {
                     var instance = new WetSpongeFunctionTest();
                     instance.doesNotBreakTorchOnEdge(helper);
+                });
+
+        Registry.register(BuiltInRegistries.TEST_FUNCTION, DOES_NOT_CREATE_OBSIDIAN_EDGE,
+                (Consumer<GameTestHelper>) (helper) -> {
+                    var instance = new WetSpongeFunctionTest();
+                    instance.doesNotCreateObsidianOnEdge(helper);
                 });
     }
 

@@ -20,9 +20,10 @@ public class WetSpongeFunctionTest implements CustomTestMethodInvoker {
 
     @GameTest(maxTicks = 10000)
     public void doesNothingWithoutWater(GameTestHelper context) {
+        var group = TestFunctionOrder.SPONGE_GROUP;
         var rule = TestFunctionOrder.WET_SPONGE_DOES_NOTHING_WITHOUT_WATER;
 
-        TestFunctionOrder.waitForTestToSucceed(context, rule, TestFunctionOrder.ORDER, () -> {
+        TestFunctionOrder.waitForTestGroup(context, group, () -> {
             var helper = new TestFunctionHelper(context.getLevel());
 
             helper.filPlanes(context, helper.GROUND_CORNERS, Blocks.STONE);
@@ -46,9 +47,10 @@ public class WetSpongeFunctionTest implements CustomTestMethodInvoker {
 
     @GameTest(maxTicks = 10000)
     public void doesNothingWithoutHeat(GameTestHelper context) {
+        var group = TestFunctionOrder.SPONGE_GROUP;
         var rule = TestFunctionOrder.WET_SPONGE_DOES_NOTHING_WITHOUT_HEAT;
 
-        TestFunctionOrder.waitForTestToSucceed(context, rule, TestFunctionOrder.ORDER, () -> {
+        TestFunctionOrder.waitForTestGroup(context, group, () -> {
             var helper = new TestFunctionHelper(context.getLevel());
 
             helper.filPlanes(context, helper.GROUND_CORNERS, Blocks.STONE);
@@ -72,9 +74,10 @@ public class WetSpongeFunctionTest implements CustomTestMethodInvoker {
 
     @GameTest(maxTicks = 10000)
     public void absorbsHighRange(GameTestHelper context) {
+        var group = TestFunctionOrder.SPONGE_GROUP;
         var rule = TestFunctionOrder.WET_SPONGE_ABSORBS_HIGH_RANGE;
 
-        TestFunctionOrder.waitForTestToSucceed(context, rule, TestFunctionOrder.ORDER, () -> {
+        TestFunctionOrder.waitForTestGroup(context, group, () -> {
             var helper = new TestFunctionHelper(context.getLevel());
             var maxTime = helper.getAbsorptionTime(context.getLevel());
 
@@ -106,10 +109,19 @@ public class WetSpongeFunctionTest implements CustomTestMethodInvoker {
                             helper.assertSamples(context, helper.MEDIUM_RANGE_SAMPLES, Blocks.AIR);
                             helper.assertSamples(context, helper.LOW_RANGE_SAMPLES, Blocks.AIR);
 
-                            context.succeed();
-                            rule.succeed();
-                        });
+                            context.destroyBlock(helper.SPONGE);
 
+                            context.runAfterDelay(maxTime + helper.second * 2, () -> {
+                                context.assertBlockPresent(Blocks.WATER, helper.SPONGE);
+                                helper.assertSamples(context, helper.WATER_SAMPLES, Blocks.WATER);
+                                helper.assertSamples(context, helper.HIGH_RANGE_SAMPLES, Blocks.WATER);
+                                helper.assertSamples(context, helper.MEDIUM_RANGE_SAMPLES, Blocks.WATER);
+                                helper.assertSamples(context, helper.LOW_RANGE_SAMPLES, Blocks.WATER);
+
+                                context.succeed();
+                                rule.succeed();
+                            });
+                        });
                     });
                 });
             });
@@ -118,9 +130,10 @@ public class WetSpongeFunctionTest implements CustomTestMethodInvoker {
 
     @GameTest(maxTicks = 10000)
     public void absorbsMediumRange(GameTestHelper context) {
+        var group = TestFunctionOrder.SPONGE_GROUP;
         var rule = TestFunctionOrder.WET_SPONGE_ABSORBS_MEDIUM_RANGE;
 
-        TestFunctionOrder.waitForTestToSucceed(context, rule, TestFunctionOrder.ORDER, () -> {
+        TestFunctionOrder.waitForTestGroup(context, group, () -> {
             var helper = new TestFunctionHelper(context.getLevel());
             var maxTime = helper.getAbsorptionTime(context.getLevel());
 
@@ -152,10 +165,19 @@ public class WetSpongeFunctionTest implements CustomTestMethodInvoker {
                             helper.assertSamples(context, helper.MEDIUM_RANGE_SAMPLES, Blocks.AIR);
                             helper.assertSamples(context, helper.LOW_RANGE_SAMPLES, Blocks.AIR);
 
-                            context.succeed();
-                            rule.succeed();
-                        });
+                            context.destroyBlock(helper.SPONGE);
 
+                            context.runAfterDelay(maxTime + helper.second * 2, () -> {
+                                context.assertBlockPresent(Blocks.WATER, helper.SPONGE);
+                                helper.assertSamples(context, helper.WATER_SAMPLES, Blocks.WATER);
+                                helper.assertSamples(context, helper.HIGH_RANGE_SAMPLES, Blocks.WATER);
+                                helper.assertSamples(context, helper.MEDIUM_RANGE_SAMPLES, Blocks.WATER);
+                                helper.assertSamples(context, helper.LOW_RANGE_SAMPLES, Blocks.WATER);
+
+                                context.succeed();
+                                rule.succeed();
+                            });
+                        });
                     });
                 });
             });
@@ -164,9 +186,10 @@ public class WetSpongeFunctionTest implements CustomTestMethodInvoker {
 
     @GameTest(maxTicks = 10000)
     public void absorbsLowRange(GameTestHelper context) {
+        var group = TestFunctionOrder.SPONGE_GROUP;
         var rule = TestFunctionOrder.WET_SPONGE_ABSORBS_LOW_RANGE;
 
-        TestFunctionOrder.waitForTestToSucceed(context, rule, TestFunctionOrder.ORDER, () -> {
+        TestFunctionOrder.waitForTestGroup(context, group, () -> {
             var helper = new TestFunctionHelper(context.getLevel());
             var maxTime = helper.getAbsorptionTime(context.getLevel());
 
@@ -198,10 +221,19 @@ public class WetSpongeFunctionTest implements CustomTestMethodInvoker {
                             helper.assertSamples(context, helper.MEDIUM_RANGE_SAMPLES, Blocks.WATER);
                             helper.assertSamples(context, helper.LOW_RANGE_SAMPLES, Blocks.AIR);
 
-                            context.succeed();
-                            rule.succeed();
-                        });
+                            context.destroyBlock(helper.SPONGE);
 
+                            context.runAfterDelay(maxTime + helper.second * 2, () -> {
+                                context.assertBlockPresent(Blocks.WATER, helper.SPONGE);
+                                helper.assertSamples(context, helper.WATER_SAMPLES, Blocks.WATER);
+                                helper.assertSamples(context, helper.HIGH_RANGE_SAMPLES, Blocks.WATER);
+                                helper.assertSamples(context, helper.MEDIUM_RANGE_SAMPLES, Blocks.WATER);
+                                helper.assertSamples(context, helper.LOW_RANGE_SAMPLES, Blocks.WATER);
+
+                                context.succeed();
+                                rule.succeed();
+                            });
+                        });
                     });
                 });
             });
@@ -210,9 +242,10 @@ public class WetSpongeFunctionTest implements CustomTestMethodInvoker {
 
     @GameTest(maxTicks = 10000)
     public void changesHeatSourceAtRuntime(GameTestHelper context) {
+        var group = TestFunctionOrder.SPONGE_GROUP;
         var rule = TestFunctionOrder.WET_SPONGE_CHANGES_HEAT_SOURCE_AT_RUNTIME;
 
-        TestFunctionOrder.waitForTestToSucceed(context, rule, TestFunctionOrder.ORDER, () -> {
+        TestFunctionOrder.waitForTestGroup(context, group, () -> {
             var helper = new TestFunctionHelper(context.getLevel());
             var maxTime = helper.getAbsorptionTime(context.getLevel());
 
@@ -278,10 +311,12 @@ public class WetSpongeFunctionTest implements CustomTestMethodInvoker {
 
     @GameTest(maxTicks = 10000)
     public void doesDryWithMaxHeat(GameTestHelper context) {
+        var group = TestFunctionOrder.SPONGE_GROUP;
         var rule = TestFunctionOrder.WET_SPONGE_DOES_DRY_WITH_MAX_HEAT;
 
-        TestFunctionOrder.waitForTestToSucceed(context, rule, TestFunctionOrder.ORDER, () -> {
-            var helper = new TestFunctionHelper(context.getLevel());
+        TestFunctionOrder.waitForTestGroup(context, group, () -> {
+            var level = context.getLevel();
+            var helper = new TestFunctionHelper(level);
 
             helper.filPlanes(context, helper.GROUND_CORNERS, Blocks.STONE);
             helper.filPlanes(context, helper.OUTER_BORDER_CORNERS, Blocks.STONE);
@@ -293,7 +328,7 @@ public class WetSpongeFunctionTest implements CustomTestMethodInvoker {
                 context.runAfterDelay(helper.second, () -> {
                     context.assertBlockPresent(Blocks.WET_SPONGE, helper.SPONGE);
                     context.assertTrue(
-                            SpongeTracker.hasSponge(context.absolutePos(helper.SPONGE)),
+                            SpongeTracker.hasSponge(level, context.absolutePos(helper.SPONGE)),
                             Component.literal("Tracker should contain sponge"));
 
                     context.setBlock(helper.HEAT_SOURCE, Blocks.LAVA_CAULDRON);
@@ -307,7 +342,7 @@ public class WetSpongeFunctionTest implements CustomTestMethodInvoker {
                         context.runAfterDelay(helper.second, () -> {
                             context.assertBlockPresent(Blocks.SPONGE, helper.SPONGE);
                             context.assertFalse(
-                                    SpongeTracker.hasSponge(context.absolutePos(helper.SPONGE)),
+                                    SpongeTracker.hasSponge(level, context.absolutePos(helper.SPONGE)),
                                     Component.literal("Tracker should not contain sponge"));
 
                             context.succeed();
@@ -321,9 +356,10 @@ public class WetSpongeFunctionTest implements CustomTestMethodInvoker {
 
     @GameTest(maxTicks = 10000)
     public void doesNotDryWithWater(GameTestHelper context) {
+        var group = TestFunctionOrder.SPONGE_GROUP;
         var rule = TestFunctionOrder.WET_SPONGE_DOES_NOT_DRY_WITH_WATER;
 
-        TestFunctionOrder.waitForTestToSucceed(context, rule, TestFunctionOrder.ORDER, () -> {
+        TestFunctionOrder.waitForTestGroup(context, group, () -> {
             var helper = new TestFunctionHelper(context.getLevel());
 
             helper.filPlanes(context, helper.GROUND_CORNERS, Blocks.STONE);
@@ -356,9 +392,10 @@ public class WetSpongeFunctionTest implements CustomTestMethodInvoker {
 
     @GameTest(maxTicks = 10000)
     public void movedByPistonWithoutHeat(GameTestHelper context) {
+        var group = TestFunctionOrder.SPONGE_GROUP;
         var rule = TestFunctionOrder.WET_SPONGE_MOVED_BY_PISTON_WITHOUT_HEAT;
 
-        TestFunctionOrder.waitForTestToSucceed(context, rule, TestFunctionOrder.ORDER, () -> {
+        TestFunctionOrder.waitForTestGroup(context, group, () -> {
             var helper = new TestFunctionHelper(context.getLevel());
             var newSponge = new BlockPos(helper.SPONGE.getX(), helper.SPONGE.getY(), helper.SPONGE.getZ() + 1);
 
@@ -397,9 +434,10 @@ public class WetSpongeFunctionTest implements CustomTestMethodInvoker {
 
     @GameTest(maxTicks = 10000)
     public void movedByPistonWithHeat(GameTestHelper context) {
+        var group = TestFunctionOrder.SPONGE_GROUP;
         var rule = TestFunctionOrder.WET_SPONGE_MOVED_BY_PISTON_WITH_HEAT;
 
-        TestFunctionOrder.waitForTestToSucceed(context, rule, TestFunctionOrder.ORDER, () -> {
+        TestFunctionOrder.waitForTestGroup(context, group, () -> {
             var helper = new TestFunctionHelper(context.getLevel());
             var maxTime = helper.getAbsorptionTime(context.getLevel());
             var newSponge = new BlockPos(helper.SPONGE.getX(), helper.SPONGE.getY(), helper.SPONGE.getZ() + 1);
@@ -443,9 +481,10 @@ public class WetSpongeFunctionTest implements CustomTestMethodInvoker {
 
     @GameTest(maxTicks = 10000)
     public void movedByPistonHeatChange(GameTestHelper context) {
+        var group = TestFunctionOrder.SPONGE_GROUP;
         var rule = TestFunctionOrder.WET_SPONGE_MOVED_BY_PISTON_CHANGE_HEAT;
 
-        TestFunctionOrder.waitForTestToSucceed(context, rule, TestFunctionOrder.ORDER, () -> {
+        TestFunctionOrder.waitForTestGroup(context, group, () -> {
             var helper = new TestFunctionHelper(context.getLevel());
             var maxTime = helper.getAbsorptionTime(context.getLevel());
             var newSponge = new BlockPos(helper.SPONGE.getX(), helper.SPONGE.getY(), helper.SPONGE.getZ() + 1);
@@ -491,9 +530,10 @@ public class WetSpongeFunctionTest implements CustomTestMethodInvoker {
 
     @GameTest(maxTicks = 10000)
     public void doesNotBreakTorchOnEdge(GameTestHelper context) {
+        var group = TestFunctionOrder.SPONGE_GROUP;
         var rule = TestFunctionOrder.WET_SPONGE_DOES_NOT_BREAK_TORCH_ON_EDGE;
 
-        TestFunctionOrder.waitForTestToSucceed(context, rule, TestFunctionOrder.ORDER, () -> {
+        TestFunctionOrder.waitForTestGroup(context, group, () -> {
             var helper = new TestFunctionHelper(context.getLevel());
 
             helper.filPlanes(context, helper.GROUND_CORNERS, Blocks.STONE);
@@ -520,6 +560,52 @@ public class WetSpongeFunctionTest implements CustomTestMethodInvoker {
 
                         context.runAfterDelay(helper.second, () -> {
                             helper.assertSamples(context, helper.HIGH_RANGE_SAMPLES, Blocks.TORCH);
+                            helper.assertSamples(context, helper.MEDIUM_RANGE_SAMPLES, Blocks.AIR);
+                            helper.assertSamples(context, helper.LOW_RANGE_SAMPLES, Blocks.AIR);
+                            helper.assertSamples(context, helper.WATER_SAMPLES, Blocks.WATER);
+
+                            context.succeed();
+                            rule.succeed();
+                        });
+
+                    });
+                });
+            });
+        });
+    }
+
+    @GameTest(maxTicks = 10000)
+    public void doesNotCreateObsidianOnEdge(GameTestHelper context) {
+        var group = TestFunctionOrder.SPONGE_GROUP;
+        var rule = TestFunctionOrder.WET_SPONGE_DOES_NOT_CREATE_OBSIDIAN_ON_EDGE;
+
+        TestFunctionOrder.waitForTestGroup(context, group, () -> {
+            var helper = new TestFunctionHelper(context.getLevel());
+
+            helper.filPlanes(context, helper.GROUND_CORNERS, Blocks.STONE);
+            helper.filPlanes(context, helper.OUTER_BORDER_CORNERS, Blocks.STONE);
+            helper.filPlanes(context, helper.WATER_CORNERS, Blocks.WATER);
+
+            context.runAfterDelay(helper.second, () -> {
+                context.setBlock(helper.SPONGE, Blocks.WET_SPONGE);
+                context.setBlock(helper.HEAT_SOURCE, Blocks.LAVA_CAULDRON);
+
+                context.runAfterDelay(helper.second, () -> {
+                    context.assertBlockPresent(Blocks.WET_SPONGE, helper.SPONGE);
+                    helper.assertSamples(context, helper.HIGH_RANGE_SAMPLES, Blocks.AIR);
+                    helper.assertSamples(context, helper.MEDIUM_RANGE_SAMPLES, Blocks.AIR);
+                    helper.assertSamples(context, helper.LOW_RANGE_SAMPLES, Blocks.AIR);
+                    helper.assertSamples(context, helper.WATER_SAMPLES, Blocks.WATER);
+
+                    context.runAfterDelay(helper.second, () -> {
+                        helper.setBlocks(context, helper.HIGH_RANGE_SAMPLES_LAVA, Blocks.LAVA);
+                        helper.assertSamples(context, helper.HIGH_RANGE_SAMPLES_LAVA, Blocks.LAVA);
+                        helper.assertSamples(context, helper.MEDIUM_RANGE_SAMPLES, Blocks.AIR);
+                        helper.assertSamples(context, helper.LOW_RANGE_SAMPLES, Blocks.AIR);
+                        helper.assertSamples(context, helper.WATER_SAMPLES, Blocks.WATER);
+
+                        context.runAfterDelay(helper.second, () -> {
+                            helper.assertSamples(context, helper.HIGH_RANGE_SAMPLES_LAVA, Blocks.LAVA);
                             helper.assertSamples(context, helper.MEDIUM_RANGE_SAMPLES, Blocks.AIR);
                             helper.assertSamples(context, helper.LOW_RANGE_SAMPLES, Blocks.AIR);
                             helper.assertSamples(context, helper.WATER_SAMPLES, Blocks.WATER);

@@ -11,15 +11,17 @@ import net.fabricmc.fabric.api.gametest.v1.CustomTestMethodInvoker;
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
 
 public class SpongeFunctionTest implements CustomTestMethodInvoker {
+
     public SpongeFunctionTest() {
         TestFunctionOrder.resetIfFinished();
     }
 
     @GameTest(maxTicks = 10000)
     public void notReplacedWithoutWater(GameTestHelper context) {
+        var group = TestFunctionOrder.SPONGE_GROUP;
         var rule = TestFunctionOrder.SPONGE_NOT_REPLACED_WITHOUT_WATER;
 
-        TestFunctionOrder.waitForTestToSucceed(context, rule, TestFunctionOrder.ORDER, () -> {
+        TestFunctionOrder.waitForTestGroup(context, group, () -> {
             var helper = new TestFunctionHelper(context.getLevel());
 
             helper.filPlanes(context, helper.GROUND_CORNERS, Blocks.STONE);
@@ -39,9 +41,10 @@ public class SpongeFunctionTest implements CustomTestMethodInvoker {
 
     @GameTest(maxTicks = 10000)
     public void preventsWaterSpreading(GameTestHelper context) {
+        var group = TestFunctionOrder.SPONGE_GROUP;
         var rule = TestFunctionOrder.SPONGE_PREVENTS_WATER_SPREADING;
 
-        TestFunctionOrder.waitForTestToSucceed(context, rule, TestFunctionOrder.ORDER, () -> {
+        TestFunctionOrder.waitForTestGroup(context, group, () -> {
             var helper = new TestFunctionHelper(context.getLevel());
             var maxTime = helper.getAbsorptionTime(context.getLevel());
 
@@ -76,9 +79,10 @@ public class SpongeFunctionTest implements CustomTestMethodInvoker {
 
     @GameTest(maxTicks = 10000)
     public void replacesExistingWater(GameTestHelper context) {
+        var group = TestFunctionOrder.SPONGE_GROUP;
         var rule = TestFunctionOrder.SPONGE_REPLACES_EXISTING_WATER;
 
-        TestFunctionOrder.waitForTestToSucceed(context, rule, TestFunctionOrder.ORDER, () -> {
+        TestFunctionOrder.waitForTestGroup(context, group, () -> {
             var helper = new TestFunctionHelper(context.getLevel());
             var maxTime = helper.getAbsorptionTime(context.getLevel());
 
@@ -116,9 +120,10 @@ public class SpongeFunctionTest implements CustomTestMethodInvoker {
 
     @GameTest(maxTicks = 10000)
     public void doesNotReplaceWaterBehindWall(GameTestHelper context) {
+        var group = TestFunctionOrder.SPONGE_GROUP;
         var rule = TestFunctionOrder.SPONGE_DOES_NOT_REPLACE_WATER_BEHIND_WALL;
 
-        TestFunctionOrder.waitForTestToSucceed(context, rule, TestFunctionOrder.ORDER, () -> {
+        TestFunctionOrder.waitForTestGroup(context, group, () -> {
             var helper = new TestFunctionHelper(context.getLevel());
             var maxTime = helper.getAbsorptionTime(context.getLevel());
             var inInfluence = new BlockPos(helper.SPONGE.getX() - 1, helper.SPONGE.getY(), helper.SPONGE.getZ());
@@ -154,9 +159,10 @@ public class SpongeFunctionTest implements CustomTestMethodInvoker {
 
     @GameTest(maxTicks = 10000)
     public void absorbsAfterWallBreak(GameTestHelper context) {
+        var group = TestFunctionOrder.SPONGE_GROUP;
         var rule = TestFunctionOrder.SPONGE_ABSORBS_AFTER_WALL_BREAK;
 
-        TestFunctionOrder.waitForTestToSucceed(context, rule, TestFunctionOrder.ORDER, () -> {
+        TestFunctionOrder.waitForTestGroup(context, group, () -> {
             var helper = new TestFunctionHelper(context.getLevel());
             var inInfluence = new BlockPos(helper.SPONGE.getX() - 1, helper.SPONGE.getY(), helper.SPONGE.getZ());
             var notInInfluence = new BlockPos(helper.SPONGE.getX() + 2, helper.SPONGE.getY(), helper.SPONGE.getZ());
@@ -192,9 +198,10 @@ public class SpongeFunctionTest implements CustomTestMethodInvoker {
 
     @GameTest(maxTicks = 10000)
     public void absorbsAfterWallBreakWithHeat(GameTestHelper context) {
+        var group = TestFunctionOrder.SPONGE_GROUP;
         var rule = TestFunctionOrder.SPONGE_ABSORBS_AFTER_WALL_BREAK_WITH_HEAT;
 
-        TestFunctionOrder.waitForTestToSucceed(context, rule, TestFunctionOrder.ORDER, () -> {
+        TestFunctionOrder.waitForTestGroup(context, group, () -> {
             var helper = new TestFunctionHelper(context.getLevel());
             var inInfluence = new BlockPos(helper.SPONGE.getX() - 1, helper.SPONGE.getY(), helper.SPONGE.getZ());
             var notInInfluence = new BlockPos(helper.SPONGE.getX() + 2, helper.SPONGE.getY(), helper.SPONGE.getZ());

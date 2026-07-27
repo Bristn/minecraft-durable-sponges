@@ -24,6 +24,7 @@ public class TestFunctionHelper {
     public List<BlockPos> MEDIUM_RANGE_SAMPLES;
     public List<BlockPos> HIGH_RANGE_SAMPLES;
     public List<BlockPos> HIGH_RANGE_SAMPLES_PISTON;
+    public List<BlockPos> HIGH_RANGE_SAMPLES_LAVA;
     public List<BlockPos> MEDIUM_RANGE_SAMPLES_PISTON;
 
     public final List<BlockPos> WATER_CORNERS = List.of(new BlockPos(1, 1, 1), new BlockPos(9, 1, 9));
@@ -57,9 +58,9 @@ public class TestFunctionHelper {
         MEDIUM_RANGE_SAMPLES = getRadialSamples(SPONGE, rangeMedium, false);
         HIGH_RANGE_SAMPLES = getRadialSamples(SPONGE, rangeHigh, false);
         HIGH_RANGE_SAMPLES_PISTON = getRadialSamples(SPONGE_PISTON, rangeHigh, false);
+        HIGH_RANGE_SAMPLES_LAVA = getRadialSamples(SPONGE.below(), rangeHigh, false);
         MEDIUM_RANGE_SAMPLES_PISTON = getRadialSamples(SPONGE_PISTON, rangeMedium, false);
         MEDIUM_RANGE_SAMPLES_PISTON.remove(PISTON);
-
     }
 
     /**

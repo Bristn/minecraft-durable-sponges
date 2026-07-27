@@ -6,7 +6,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.bristn.durable_sponges.CommonModInitializer;
 import net.bristn.durable_sponges.block_states.ModBlockStates;
 import net.bristn.durable_sponges.util.SpongeTracker;
 import net.bristn.durable_sponges.util.WetSpongeInterface;
@@ -67,15 +66,15 @@ public abstract class WetSpongeBlockMixin extends Block {
             return;
         }
 
-        if (SpongeTracker.hasSponge(spongePos)) {
+        var serverLevel = (ServerLevel) level;
+        if (SpongeTracker.hasSponge(serverLevel, spongePos)) {
             return;
         }
 
-        SpongeTracker.addSponge(spongePos, new WetSpongeInterface());
+        SpongeTracker.addSponge(serverLevel, spongePos, new WetSpongeInterface());
 
         // Update the heat level with a delay of one tick. This ensure the POI is
         // registered properly
-        var serverLevel = (ServerLevel) level;
         serverLevel.scheduleTick(spongePos, state.getBlock(), 1);
     }
 
@@ -98,13 +97,13 @@ public abstract class WetSpongeBlockMixin extends Block {
             return;
         }
 
-        var access = SpongeTracker.getWetSponge(spongePos);
+        var access = SpongeTracker.getWetSponge(level, spongePos);
         if (access == null) {
             return;
         }
 
         if (access.isHeatInitialized() == false) {
-            access.updateHeatLevel(spongePos, level);
+            access.updateHeatLevel(spongePos, level, false);
             access.setIsHeatInitialized(true);
         }
     }

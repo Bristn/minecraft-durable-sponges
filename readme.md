@@ -4,13 +4,15 @@
 
 The default behaviour of sponges is adjusted to keep absorbing water after being initially placed. By default this absorption duration is 3 seconds, but can be changed with the game rule `/gamerule durable_sponges:absorption_time_max 3`. The highest value this game rule cna be set to is 10 seconds.
 
-TODO: GIF
+![Time preview](./doc/game/time_preview.gif)
 
 <hr></hr>
 
 ![Heating integration](./doc/headers/heating_header.png)
 
 Some light emitting blocks are tagged into the 3 heat sources `low`, `medium` or `high`. If a a sponge or a wet sponge is placed next to one of the heat sources, the sponge will continue to absorb water in a range based on the heat source.
+
+![Heat preview](./doc/game/heat_preview.gif)
 
 | Low heat                                                   | Medium heat                                                      | High heat                                                    |
 | ---------------------------------------------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------ |

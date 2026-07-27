@@ -1,11 +1,10 @@
 package net.bristn.durable_sponges.util;
 
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import net.bristn.durable_sponges.CommonModInitializer;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerBlockEntityEvents;
+import net.bristn.durable_sponges.records.ServerLevelAndPos;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLevelEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -14,11 +13,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Blocks;
 
 public class SpongeTracker {
-
-    // TODO: Is not correctly initialized when loading the map.
-    // ! -> nicht alle Sponges werden korrekt geladen, aber manche schon?
-
-    private static HashMap<BlockPos, WetSpongeInterface> sponges = new HashMap<>();
+    private static long lastUpdate = 0L;
+    private static HashMap<ServerLevel, HashMap<BlockPos, WetSpongeInterface>> sponges = new HashMap<>();
 
     /**
      * As the wet sponges are no BlockEntity, the loadAdditional method is not
@@ -28,19 +24,20 @@ public class SpongeTracker {
      * As the onPlace injection is not called when loading from disk
      */
     public static void registerChunkLoadHandler() {
-        var uninitialized = new ArrayDeque<BlockPos>();
+        var uninitialized = new ArrayDeque<ServerLevelAndPos>();
 
         // Populate the sponges collection when the chunk is loaded
         // ! This cannot call updateHeatLevel, as the level is not fully initialized
         ServerChunkEvents.CHUNK_LOAD.register((level, chunk, generated) -> {
-            // TODO: Also track the dimension of the sponge (Update register methods to
-            // include level/dimension)!
             level.dimension();
 
             chunk.findBlocks(state -> state.is(Blocks.WET_SPONGE), (foundPos, foundState) -> {
-                if (SpongeTracker.hasSponge(foundPos) == false) {
-                    SpongeTracker.addSponge(foundPos, new WetSpongeInterface());
-                    uninitialized.add(foundPos);
+
+                // ! Prevent by reference issues be copying the block position
+                var spongePos = new BlockPos(foundPos.getX(), foundPos.getY(), foundPos.getZ());
+                if (SpongeTracker.hasSponge(level, spongePos) == false) {
+                    SpongeTracker.addSponge(level, spongePos, new WetSpongeInterface());
+                    uninitialized.add(new ServerLevelAndPos(level, spongePos));
                 }
             });
         });
@@ -49,13 +46,15 @@ public class SpongeTracker {
         // update their heat level once and flag them as being initialized
         ServerTickEvents.START_SERVER_TICK.register(server -> {
             while (!uninitialized.isEmpty()) {
-                var blockPos = uninitialized.removeFirst();
+                var levelAndPos = uninitialized.removeFirst();
+                var level = levelAndPos.level();
+                var spongePos = levelAndPos.pos();
 
-                if (SpongeTracker.hasSponge(blockPos) == true) {
-                    var sponge = SpongeTracker.getWetSponge(blockPos);
-                    sponge.updateHeatLevel(blockPos, server.overworld()); // TODO: Dont harcode overworld
+                if (SpongeTracker.hasSponge(level, spongePos) == true) {
+                    var sponge = SpongeTracker.getWetSponge(level, spongePos);
+                    sponge.updateHeatLevel(spongePos, level, true);
                 } else {
-                    uninitialized.addLast(blockPos);
+                    uninitialized.addLast(new ServerLevelAndPos(level, spongePos));
                 }
             }
         });
@@ -65,38 +64,108 @@ public class SpongeTracker {
         });
     }
 
-    public static void addSponge(BlockPos position, WetSpongeInterface sponge) {
-        if (sponges.containsKey(position)) {
+    public static void registerSpongeUpdateHandler() {
+        ServerTickEvents.START_SERVER_TICK.register(server -> {
+            var anyLevel = server.getAllLevels().iterator().next();
+            var now = anyLevel.getGameTime();
+            var difference = now - lastUpdate;
+            if (difference < 10) {
+                return;
+            }
+
+            lastUpdate = now;
+
+            sponges.forEach((level, spongesInLevel) -> {
+                spongesInLevel.forEach((spongePos, access) -> {
+                    access.updateSpongeUsingWaterPosition(spongePos, level);
+                });
+            });
+        });
+    }
+
+    /**
+     * Keep track of the sponge access. If there is no collection for this level, a
+     * new one is added. Otherwise the sponge is appended to the existing collection
+     * 
+     * @param level
+     * @param position
+     * @param sponge
+     */
+    public static void addSponge(ServerLevel level, BlockPos position, WetSpongeInterface sponge) {
+        if (hasSponge(level, position)) {
             return;
         }
 
         CommonModInitializer.LOGGER.info("SpongeTracker: Register wet sponge " + sponge.getId() + " at " + position);
-        sponges.put(position, sponge);
-    }
-
-    public static void removeSponge(ServerLevel level, BlockPos position) {
-        CommonModInitializer.LOGGER.info("SpongeTracker: Remove wet sponge at " + position);
-        sponges.remove(position);
-
-        // TODO: Call spread of nearby water blocks?
-
-        var positions = SpongeUtility.getWaterPositions(position, level);
-        CommonModInitializer.LOGGER.info(positions.toString());
-
-        for (var blockPos : positions) {
-            var fluidState = level.getBlockState(blockPos).getFluidState();
-            fluidState.tick(level, blockPos, level.getBlockState(blockPos));
+        var spongesInLevel = sponges.get(level);
+        if (spongesInLevel == null) {
+            spongesInLevel = new HashMap<BlockPos, WetSpongeInterface>();
         }
 
+        spongesInLevel.put(position, sponge);
+        sponges.put(level, spongesInLevel);
     }
 
-    public static WetSpongeInterface getWetSponge(BlockPos position) {
-        var sponge = sponges.get(position);
-        return sponge;
+    /**
+     * Removes the sponge from being tracker. If the level does not contain any
+     * sponges anymore, remove the entire level from the collection
+     * 
+     * @param level
+     * @param position
+     */
+    public static void removeSponge(ServerLevel level, BlockPos position) {
+        CommonModInitializer.LOGGER.info("SpongeTracker: Remove wet sponge at " + position);
+        var hasSPonge = hasSponge(level, position);
+        if (hasSPonge == false) {
+            return;
+        }
+
+        var sponge = getWetSponge(level, position);
+        var spongesInLevel = sponges.get(level);
+        if (spongesInLevel == null) {
+            return;
+        }
+
+        spongesInLevel.remove(position);
+        if (spongesInLevel.isEmpty()) {
+            sponges.remove(level);
+        }
+
+        // When removing the wet sponge, manually tick all affected water sources to
+        // make them spread again
+        sponge.tickAndClearWaterPositions(position, level);
     }
 
-    public static boolean hasSponge(BlockPos position) {
-        var hasSponge = sponges.containsKey(position);
-        return hasSponge;
+    /**
+     * Gets the sponge access at the position within the level
+     * 
+     * @param level
+     * @param position
+     * @return
+     */
+    public static WetSpongeInterface getWetSponge(ServerLevel level, BlockPos position) {
+        var spongesInLevel = sponges.get(level);
+        if (spongesInLevel == null) {
+            return null;
+        }
+
+        return spongesInLevel.get(position);
+    }
+
+    /**
+     * Check if there is a sponge at the position within the given level
+     * 
+     * @param level
+     * @param position
+     * @return
+     */
+    public static boolean hasSponge(ServerLevel level, BlockPos position) {
+        var hasLevel = sponges.containsKey(level);
+        if (hasLevel == false) {
+            return false;
+        }
+
+        var spongesInLevel = sponges.get(level);
+        return spongesInLevel.containsKey(position);
     }
 }

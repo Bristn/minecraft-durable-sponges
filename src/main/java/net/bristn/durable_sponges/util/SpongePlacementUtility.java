@@ -25,22 +25,33 @@ public class SpongePlacementUtility {
             return;
         }
 
+        removeWetSpongeAt((ServerLevel) level, pos);
+
         // Prevent the sponge absorption from repeatedly triggering influence updates
         if (state.isAir() && oldState.is(Blocks.WATER)) {
             return;
         }
 
         var serverLevel = (ServerLevel) level;
-        var nearbySponges = SpongeUtility.getClosestSponges(serverLevel, pos);
+        var nearbySponges = SpongeRadiusUtility.getClosestSponges(serverLevel, pos);
         updateWithBlockPlacement(serverLevel, nearbySponges, pos);
+    }
+
+    private static void removeWetSpongeAt(ServerLevel level, BlockPos pos) {
+        var hasSponge = SpongeTracker.hasSponge(level, pos);
+        if (hasSponge == false) {
+            return;
+        }
+
+        SpongeTracker.removeSponge(level, pos);
     }
 
     private static void updateWithBlockPlacement(ServerLevel level, List<BlockPos> nearbySponges, BlockPos position) {
         for (var spongePos : nearbySponges) {
             var state = level.getBlockState(spongePos);
             if (state.is(Blocks.SPONGE) == true) {
-                var success = SpongeUtility.tryFirstAbsorption(spongePos, level);
-                if (success == true) {
+                var result = AbsorptionUtility.tryFirstAbsorption(spongePos, level);
+                if (result.hasAbsorbed() == true) {
                     break;
                 }
 
@@ -53,9 +64,9 @@ public class SpongePlacementUtility {
 
             // If the block has changed within the reachable area, recalculate the influence
             // of the sponge
-            var access = SpongeTracker.getWetSponge(spongePos);
+            var access = SpongeTracker.getWetSponge(level, spongePos);
             if (access == null) {
-                CommonModInitializer.LOGGER.error("Sponge access is null");
+                CommonModInitializer.LOGGER.error("Sponge access at " + spongePos + " is null");
                 continue;
             }
 
