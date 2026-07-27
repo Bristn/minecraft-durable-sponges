@@ -71,7 +71,7 @@ public class SpongeRadiusUtility {
         Set<BlockPos> edge = new HashSet<>();
         Set<BlockPos> water = new HashSet<>();
 
-        var startCenter = spongePos.getCenter();
+        var startCenter = spongePos;
         var waterRadius = radius + 1;
         var waterRadiusSq = Math.pow(waterRadius, 2);
         var radiusSq = Math.pow(radius, 2);
@@ -81,7 +81,7 @@ public class SpongeRadiusUtility {
                 (pos, consumer) -> acceptAllNeighbors(pos, consumer),
                 (pos) -> {
                     // ! Distance check makes influence rounded instead of diamond shaped
-                    var distance = pos.getCenter().distanceToSqr(startCenter);
+                    var distance = pos.distSqr(startCenter);
                     if (distance > waterRadiusSq) {
                         return TraversalNodeStatus.SKIP;
                     }
