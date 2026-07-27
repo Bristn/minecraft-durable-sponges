@@ -2,7 +2,7 @@
 
 ![Duration integration](./doc/headers/duration_header.png)
 
-The default behaviour of sponges is adjusted to keep absorbing water after being initially placed. By default this absorption duration is 3 seconds, but can be changed with the game rule `/gamerule durable_sponges:absorption_time_max 3`. The highest value this game rule cna be set to is 10 seconds.
+The default behaviour of sponges is adjusted to keep absorbing water after being initially placed. By default this absorption duration is 3 seconds, but can be changed with the game rule `/gamerule durable_sponges:absorption_time_max 3`. The highest value this game rule may be set to is 10 seconds.
 
 ![Time preview](./doc/game/time_preview.gif)
 
@@ -42,6 +42,12 @@ The heat sources can be modified using the block tags `durable_sponges/tags/bloc
 
 ![Drying integration](./doc/headers/drying_header.png)
 
-If there is a high heat source next to a wet sponge and the sponge has not absorbed any water in the last seconds, the wet sponge will dry to a regular sponge with the next random tick. The delay after absorbing water and the possibility of drying can be changed using the following game rule `/gamerule durable_sponges:delay_before_drying 2`. Setting this game rule to 0 will disable drying wet sponges using high heat sources.
+If there is a high heat source next to a wet sponge and the sponge has not absorbed any water in the last seconds, the wet sponge will dry to a regular sponge with the next random tick. The delay after absorbing water and the possibility of drying can be changed using the following game rule `/gamerule durable_sponges:delay_before_drying 2`. Setting this game rule to 0 will disable this feature.
 
 ![Dry preview](./doc/game/dry_preview.gif)
+
+<hr></hr>
+
+![Modpack header](./doc/headers/modpack_header.png)
+
+Feel free to use this mod in any modpacks. **Like with any other mod, you should backup your world before adding this mod**. To check if there might be any compatibility issues with other mods, create a superflat world and run the command `/test run durable_sponges:*`. These tests probably don't cover all edge cases, but are a good start to find any major problems. The tests can be cleared using `/test clearall`

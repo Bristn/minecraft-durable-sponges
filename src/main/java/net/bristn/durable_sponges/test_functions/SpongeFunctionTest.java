@@ -1,16 +1,13 @@
 package net.bristn.durable_sponges.test_functions;
 
-import java.lang.reflect.Method;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.level.block.Blocks;
 import net.bristn.durable_sponges.test_utilities.TestFunctionOrder;
 import net.bristn.durable_sponges.test_utilities.TestFunctionHelper;
-import net.fabricmc.fabric.api.gametest.v1.CustomTestMethodInvoker;
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
 
-public class SpongeFunctionTest implements CustomTestMethodInvoker {
+public class SpongeFunctionTest {
 
     public SpongeFunctionTest() {
         TestFunctionOrder.resetIfFinished();
@@ -236,8 +233,4 @@ public class SpongeFunctionTest implements CustomTestMethodInvoker {
         });
     }
 
-    @Override
-    public void invokeTestMethod(GameTestHelper context, Method method) throws ReflectiveOperationException {
-        method.invoke(this, context);
-    }
 }
