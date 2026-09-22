@@ -17,7 +17,6 @@ jobs:
         id: gradle_meta
         shell: bash
         run: |
-          echo "minecraft_version=$(grep '^minecraft_version=' gradle.properties | cut -d'=' -f2)" >> "$GITHUB_OUTPUT"
           echo "mod_version=$(grep '^mod_version=' gradle.properties | cut -d'=' -f2)" >> "$GITHUB_OUTPUT"
           echo "java_version=$(grep -Eo 'JavaLanguageVersion\.of\([0-9]+\)|VERSION_[0-9]+' build.gradle | tail -n 1 | tr -cd '0-9')" >> "$GITHUB_OUTPUT"
 
@@ -35,5 +34,5 @@ jobs:
       - name: capture build artifacts
         uses: actions/upload-artifact@v7
         with:
-          name: Artifacts-${{ steps.gradle_meta.outputs.mod_version }}-mc${{ steps.gradle_meta.outputs.minecraft_version }}
+          name: Artifacts-${{ steps.gradle_meta.outputs.mod_version }}
           path: build/libs/
