@@ -1,0 +1,67 @@
+name: publish_release
+on:
+  push:
+    tags:
+      - "release-*"
+
+jobs:
+  publish:
+    name: Publish release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Load gradle metadata
+        id: gradle_meta
+        shell: bash
+        run: |
+          echo "minecraft_version=$(grep '^minecraft_version=' gradle.properties | cut -d'=' -f2)" >> "$GITHUB_OUTPUT"
+          echo "mod_version=$(grep '^mod_version=' gradle.properties | cut -d'=' -f2)" >> "$GITHUB_OUTPUT"
+          echo "archives_base_name=$(grep '^archives_base_name=' gradle.properties | cut -d'=' -f2)" >> "$GITHUB_OUTPUT"
+          echo "java_version=$(grep -Eo 'JavaLanguageVersion\.of\([0-9]+\)|VERSION_[0-9]+' build.gradle | tail -n 1 | tr -cd '0-9')" >> "$GITHUB_OUTPUT"
+
+      - name: Read changelog
+        id: changelog
+        shell: bash
+        run: |
+          {
+            echo "content<<EOF"
+            cat changelog.md
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Set up JDK
+        uses: actions/setup-java@v5
+        with:
+          java-version: "${{ steps.gradle_meta.outputs.java_version }}"
+          distribution: temurin
+
+      - name: Build mod jar
+        run: |
+          chmod +x ./gradlew
+          ./gradlew clean build
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: Release ${{ steps.gradle_meta.outputs.mod_version }}
+          body: ${{ steps.changelog.outputs.content }}
+          draft: false
+          prerelease: false
+          files: build/libs/*.jar
+
+      - name: Upload to Modrinth
+        uses: cloudnode-pro/modrinth-publish@v2
+        with:
+          token: ${{ secrets.MODRINTH_TOKEN }}
+          project: ${{ vars.MODRINTH_ID }}
+          name: ${{ steps.gradle_meta.outputs.mod_version }}
+          version: ${{ steps.gradle_meta.outputs.mod_version }}
+          changelog: ${{ steps.changelog.outputs.content }}
+          loaders: fabric
+          game-versions: ${{ steps.gradle_meta.outputs.minecraft_version }}.*
+          files: build/libs/${{ steps.gradle_meta.outputs.archives_base_name }}-${{ steps.gradle_meta.outputs.mod_version }}.jar

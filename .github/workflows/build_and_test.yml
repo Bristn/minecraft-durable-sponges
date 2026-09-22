@@ -4,7 +4,13 @@
 # against bad commits.
 
 name: build
-on: [pull_request, push]
+on:
+  pull_request:
+  push:
+    branches:
+      - "**"
+    tags-ignore:
+      - "**"
 
 jobs:
   build:
@@ -12,13 +18,21 @@ jobs:
     steps:
       - name: checkout repository
         uses: actions/checkout@v6
+
+      - name: load gradle version metadata
+        id: gradle_meta
+        shell: bash
+        run: |
+          echo "mod_version=$(grep '^mod_version=' gradle.properties | cut -d'=' -f2)" >> "$GITHUB_OUTPUT"
+          echo "java_version=$(grep -Eo 'JavaLanguageVersion\.of\([0-9]+\)|VERSION_[0-9]+' build.gradle | tail -n 1 | tr -cd '0-9')" >> "$GITHUB_OUTPUT"
+
       - name: validate gradle wrapper
         uses: gradle/actions/wrapper-validation@v6
       - name: setup jdk
         uses: actions/setup-java@v5
         with:
-          java-version: '25'
-          distribution: 'microsoft'
+          java-version: "${{ steps.gradle_meta.outputs.java_version }}"
+          distribution: "microsoft"
       - name: make gradle wrapper executable
         run: chmod +x ./gradlew
       - name: build
@@ -26,5 +40,5 @@ jobs:
       - name: capture build artifacts
         uses: actions/upload-artifact@v7
         with:
-          name: Artifacts
+          name: Artifacts-${{ steps.gradle_meta.outputs.mod_version }}
           path: build/libs/
