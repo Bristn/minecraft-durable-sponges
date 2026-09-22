@@ -1,0 +1,1 @@
+- Test: Add github action to automatically upload to modirnth
