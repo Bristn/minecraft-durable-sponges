@@ -91,9 +91,16 @@ public class WetSpongeInterface {
         var state = level.getBlockState(spongePos);
         var prevHeatLevel = state.getValue(ModBlockStates.HEAT_LEVEL);
 
+        // Quickly placing a sponge, quitting the level results in the HEAT_LEVEL = 0
+        // and the LAST_HEAT_LEVEL = 3. Loading the level again, the LAST_HEAT_LEVEL = 3
+        // should be used to ensure that all water positions are update
+        if (initializeWaterPositions) {
+            prevHeatLevel = Math.max(state.getValue(ModBlockStates.LAST_HEAT_LEVEL), prevHeatLevel);
+        }
+
         // Store the heat level in the sponge state
         var isFirstUpdate = (this.isHeatInitialized == false && prevHeatLevel == ModBlockStates.HEAT_LEVEL_MAX);
-        if (prevHeatLevel != heatLevel || isFirstUpdate) {
+        if (prevHeatLevel != heatLevel || isFirstUpdate || initializeWaterPositions) {
             var maxTime = ModGameRules.getAbsorptionTimeMax(level);
             state = state.setValue(ModBlockStates.ABSORPTION_TIME, maxTime);
             state = state.setValue(ModBlockStates.HEAT_LEVEL, heatLevel);

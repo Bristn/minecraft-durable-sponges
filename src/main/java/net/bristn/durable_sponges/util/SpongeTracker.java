@@ -60,6 +60,7 @@ public class SpongeTracker {
         });
 
         ServerLevelEvents.UNLOAD.register((server, level) -> {
+            lastUpdate = 0;
             sponges.clear();
         });
     }
