@@ -1,1 +1,3 @@
-- Test: Add github action to automatically upload to modirnth
+- Fix absorption time not working when switching worlds
+  - The timer tracking when to update the water positions was not reset properly, leading to it using the world tick time of the previous world
+  - Resulting in the absorption breaking when first loading an old world and then joining a newer world
