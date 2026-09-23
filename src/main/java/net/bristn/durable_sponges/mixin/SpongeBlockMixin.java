@@ -57,7 +57,7 @@ public abstract class SpongeBlockMixin extends Block {
      * @param callback
      */
     @Inject(method = "tryAbsorbWater", at = @At("HEAD"), cancellable = true)
-    protected void durableSPongeTryAbsorbWater(final Level level, final BlockPos pos, CallbackInfo callback) {
+    protected void durableSpongeTryAbsorbWater(final Level level, final BlockPos pos, CallbackInfo callback) {
         callback.cancel();
     }
 }

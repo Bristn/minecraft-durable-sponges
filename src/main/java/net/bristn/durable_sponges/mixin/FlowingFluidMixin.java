@@ -50,7 +50,7 @@ abstract class FlowingFluidMixin extends Fluid {
         // check if the sponge can still absorb water
         var spongePos = result.spongePos();
         var access = SpongeTracker.getWetSponge(severLevel, spongePos);
-        var neighbors = BlockPos.withinManhattan(waterPos, 1, 1, 1);
+        var neighbors = BlockPos.withinManhattan(waterPos, 1);
         for (var neighbor : neighbors) {
             var isNeighborWater = AbsorptionUtility.isWater(neighbor, (ServerLevel) level);
             if (isNeighborWater == false) {

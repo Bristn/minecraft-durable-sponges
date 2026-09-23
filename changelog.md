@@ -1,1 +1,1 @@
-- Test: Add github action to automatically upload to modirnth
+- Update to Minecraft 26.3
